@@ -1,16 +1,8 @@
 from flask import request, jsonify
 from config import app, db
 from models import Contact
-
-
-@app.route("/contacts", methods=["GET"])
-def get_contacts():
-    contacts = Contact.query.all()
-    json_contacts = list(map(lambda x: x.to_json(), contacts))
-    return jsonify({"contacts": json_contacts})
-
-
-@app.route("/create_contact", methods=["POST"])
+# Create
+@app.route('/create_contact', methods=['POST'])
 def create_contact():
     first_name = request.json.get("firstName")
     last_name = request.json.get("lastName")
@@ -27,43 +19,67 @@ def create_contact():
         db.session.add(new_contact)
         db.session.commit()
     except Exception as e:
-        return jsonify({"message": str(e)}), 400
+        return (
+            jsonify({
+                'message': str(e)
+            }), 400
+        )
 
-    return jsonify({"message": "User created!"}), 201
+    return jsonify({
+        'message': 'Successfully created contact!'
+    }), 201
 
+# Read
+@app.route('/contacts', methods=['GET'])
+def get_contacts():
+    contacts = Contact.query.order_by(Contact.first_name.asc()).all()
+    json_contacts = list(map(lambda x: x.to_json(), contacts))
 
-@app.route("/update_contact/<int:user_id>", methods=["PATCH"])
+    return jsonify({
+        'contacts': json_contacts
+    })
+
+# Update
+@app.route('/update_contact/<int:user_id>', methods=['PATCH'])
 def update_contact(user_id):
     contact = Contact.query.get(user_id)
 
     if not contact:
-        return jsonify({"message": "User not found"}), 404
+        return (
+            jsonify({
+                'message': 'Contact not found'
+            }), 404
+        )
 
-    data = request.json
-    contact.first_name = data.get("firstName", contact.first_name)
-    contact.last_name = data.get("lastName", contact.last_name)
-    contact.email = data.get("email", contact.email)
+    data = request.json or {}
 
     db.session.commit()
 
-    return jsonify({"message": "Usr updated."}), 200
+    return jsonify({
+        'message': 'Successfully updated contact!'
+    }), 200
 
-
-@app.route("/delete_contact/<int:user_id>", methods=["DELETE"])
+# Delete.
+@app.route('/delete_contact/<int:user_id>', methods=['DELETE'])
 def delete_contact(user_id):
     contact = Contact.query.get(user_id)
-
+    
     if not contact:
-        return jsonify({"message": "User not found"}), 404
+        return (
+            jsonify({
+                'message': 'Contact not found'
+            }), 404
+        )
 
     db.session.delete(contact)
     db.session.commit()
 
-    return jsonify({"message": "User deleted!"}), 200
+    return jsonify({
+        'message': 'Successfully deleted contact!'
+    }), 200
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-    app.run(debug=True)
+    app.run(debug = True)
