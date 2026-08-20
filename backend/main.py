@@ -1,20 +1,31 @@
 from flask import request, jsonify
 from config import app, db
 from models import Contact
+from validation import validate_contact
+
 # Create
 @app.route('/create_contact', methods=['POST'])
 def create_contact():
-    first_name = request.json.get("firstName")
-    last_name = request.json.get("lastName")
-    email = request.json.get("email")
+    payload = request.json or {}
+    is_valid, errors, cleaned = validate_contact(payload, required = True)
 
-    if not first_name or not last_name or not email:
+    if not is_valid or errors:
         return (
-            jsonify({"message": "You must include a first name, last name and email"}),
-            400,
+            jsonify({
+                'message': 'Validation failed', 
+                'errors': errors,
+            }), 400
         )
 
-    new_contact = Contact(first_name=first_name, last_name=last_name, email=email)
+    new_contact = Contact(
+        first_name = cleaned['first_name'],
+        last_name = cleaned['last_name'],
+        nickname = cleaned['nickname'],
+        email = cleaned['email'],
+        phone = cleaned['phone'],
+        birthday = cleaned['birthday'].isoformat() if cleaned['birthday'] else None,
+        notes = cleaned['notes'],
+    )
     try:
         db.session.add(new_contact)
         db.session.commit()
@@ -52,6 +63,30 @@ def update_contact(user_id):
         )
 
     data = request.json or {}
+    is_valid, errors, cleaned = validate_contact(data, required = False)
+
+    if not is_valid:
+        return (
+            jsonify({
+                'message': 'Validation failed', 
+                'errors': errors
+            }), 400
+        )
+
+    if cleaned['first_name'] is not None:
+        contact.first_name = cleaned['first_name']
+    if cleaned['last_name'] is not None:
+        contact.last_name = cleaned['last_name']
+    if cleaned['nickname'] is not None:
+        contact.nickname = cleaned['nickname']
+    if cleaned['email'] is not None:
+        contact.email = cleaned['email']
+    if cleaned['phone'] is not None:
+        contact.phone = cleaned['phone']
+    if cleaned['birthday'] is not None:
+        contact.birthday = cleaned['birthday'].isoformat()
+    if cleaned['notes'] is not None:
+        contact.notes = cleaned['notes']
 
     db.session.commit()
 
