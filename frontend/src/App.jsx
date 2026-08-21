@@ -134,14 +134,14 @@ function App() {
                         <div className="-mt-1 text-5xl font-bold tracking-tight text-zinc-100">
                             Knotebook
                         </div>
-                        <p className="mt-2 font-sans text-sm text-zinc-500">
-                            a contacts manager. you're sooo popular.
-                        </p>
                     </div>
+                    <p className="mr-auto self-end pl-3 font-sans text-sm text-zinc-500">
+                        a contacts manager. you're sooo popular.
+                    </p>
                     <button
                         type="button"
                         onClick={openCreateModal}
-                        className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400"
+                        className="rounded-lg bg-amber-500 mt-3 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-amber-400"
                     >
                         New Contact
                     </button>
