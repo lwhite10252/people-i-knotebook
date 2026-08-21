@@ -71,11 +71,16 @@ function App() {
         <div className="min-h-screen bg-zinc-950 py-10 px-4">
             <div className="mx-auto max-w-5xl space-y-6">
                 <header className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-bold text-zinc-100">
-                            People I Knotebook
-                        </h1>
-                        <p className="mt-1 text-sm text-zinc-400">a contacts manager. you're sooo popular.</p>
+                    <div className="title-font leading-none">
+                        <div className="text-lg font-semibold text-zinc-100">
+                            People I
+                        </div>
+                        <div className="-mt-1 text-5xl font-bold tracking-tight text-zinc-100">
+                            Knotebook
+                        </div>
+                        <p className="mt-2 font-sans text-sm text-zinc-500">
+                            a contacts manager. you're sooo popular.
+                        </p>
                     </div>
                     <button
                         type="button"
