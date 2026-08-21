@@ -32,12 +32,11 @@ const ContactList = ({
     }
 
     return (
-        <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-900">
-            <table className="w-full text-left text-sm">
+        <div className="contacts-list-container overflow-x-auto border border-zinc-800">
+            <table className="contacts-list w-full text-left text-sm">
                 <thead className="bg-zinc-950 text-zinc-500">
                     <tr>
                         <th className="px-4 py-3 font-medium">Name</th>
-                        <th className="px-4 py-3 font-medium">Nickname</th>
                         <th className="px-4 py-3 font-medium">Email</th>
                         <th className="px-4 py-3 font-medium">Phone</th>
                         <th className="px-4 py-3 font-medium">Birthday</th>
@@ -45,26 +44,29 @@ const ContactList = ({
                         <th className="px-4 py-3 font-medium text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-800">
+                <tbody>
                     {contacts.map(
-                        (contact) => (
-                            <tr key={contact?.id ?? Math.random()}>
-                                <td className="px-4 py-3 font-medium text-zinc-100">
-                                    {contact?.first_name ?? ''} {contact?.last_name ?? ''}
+                        (contact, index) => (
+                            <tr
+                                key={contact?.id ?? Math.random()}
+                                className={index % 2 === 0 ? 'notepaper-row-even' : 'notepaper-row-odd'}
+                            >
+                                <td className="px-4 py-3 text-zinc-800">
+                                    <div>{contact?.first_name ?? ''} {contact?.last_name ?? ''}</div>
+                                    {contact?.nickname && (
+                                        <div className="text-xs text-zinc-500">({contact.nickname})</div>
+                                    )}
                                 </td>
-                                <td className="px-4 py-3 text-zinc-400">
-                                    {contact?.nickname ?? ''}
-                                </td>
-                                <td className="px-4 py-3 text-zinc-400">
+                                <td className="px-4 py-3 text-zinc-700">
                                     {contact?.email ?? ''}
                                 </td>
-                                <td className="px-4 py-3 text-zinc-400">
+                                <td className="px-4 py-3 text-zinc-700">
                                     {contact?.phone ?? ''}
                                 </td>
-                                <td className="px-4 py-3 text-zinc-400">
+                                <td className="px-4 py-3 text-zinc-700">
                                     {contact?.birthday ?? ''}
                                 </td>
-                                <td className="px-4 py-3 text-zinc-400">
+                                <td className="px-4 py-3 text-zinc-700">
                                     {contact?.notes ?? ''}
                                 </td>
                                 <td className="px-4 py-3 text-right">
@@ -72,14 +74,14 @@ const ContactList = ({
                                         <button
                                             type="button"
                                             onClick={() => onEdit(contact)}
-                                            className="text-sm font-medium text-amber-400 hover:text-amber-300"
+                                            className="text-sm font-medium text-amber-700 hover:text-amber-600"
                                         >
                                             Edit
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => onDelete(contact.id)}
-                                            className="text-sm font-medium text-red-400 hover:text-red-300"
+                                            className="text-sm font-medium text-red-700 hover:text-red-600"
                                         >
                                             Delete
                                         </button>
@@ -88,6 +90,9 @@ const ContactList = ({
                             </tr>
                         )
                     )}
+                    <tr className={contacts.length % 2 === 0 ? 'notepaper-row-even' : 'notepaper-row-odd'}>
+                        <td colSpan="6" className="h-12" aria-hidden="true" />
+                    </tr>
                 </tbody>
             </table>
         </div>

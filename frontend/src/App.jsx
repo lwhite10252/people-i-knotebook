@@ -124,7 +124,7 @@ function App() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-950 py-10 px-4">
+        <div className="min-h-screen bg-zinc-900 py-10 px-4">
             <div className="mx-auto max-w-5xl space-y-6">
                 <header className="flex items-center justify-between">
                     <div className="title-font leading-none">
@@ -157,7 +157,7 @@ function App() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search"
-                            className="w-64 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 outline-none focus:border-amber-500"
+                            className="w-64 rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 outline-none focus:border-amber-500"
                         />
                     </div>
                     <ContactList

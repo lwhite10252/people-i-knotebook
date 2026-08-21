@@ -3,3 +3,46 @@
 button {
     cursor: pointer;
 }
+
+/* Contacts list styling */
+.contacts-list-container {
+    position: relative;
+    background: #f4eeda;
+    border-bottom: none;
+}
+
+.contacts-list-container::before {
+    position: absolute;
+    inset: 3.5rem auto 0 0;
+    width: 5.5rem;
+    background: radial-gradient(circle at center 1.75rem, var(--color-zinc-900) 0 0.975rem, transparent 1.0125rem) 0 0 / 100% 4.5rem repeat-y;
+    content: "";
+    pointer-events: none;
+    z-index: 1;
+}
+
+.contacts-list tbody td:not(:last-child) {
+    font-family: "Pangolin", ui-sans-serif, system-ui, sans-serif;
+}
+
+.contacts-list tbody td:first-child {
+    padding-left: 5.5rem;
+}
+
+.contacts-list thead th:first-child {
+    padding-left: 5.5rem;
+}
+
+.notepaper-row-even {
+    /* background-color: #ece4cf; */
+    background-color: #e9deb3;
+}
+
+.notepaper-row-odd {
+    background-color: #f4eeda;
+}
+
+.notepaper-row-even,
+.notepaper-row-odd {
+    border-bottom: 1px solid #c9c2a8;
+}
