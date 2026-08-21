@@ -71,6 +71,44 @@ function App() {
         return haystack.includes(term);
     });
 
+    const handleDownloadCsv = () => {
+        const headers = [
+            'First Name', 
+            'Last Name', 
+            'Nickname', 
+            'Email', 
+            'Phone', 
+            'Birthday', 
+            'Notes'
+        ];
+        const escapeCsvValue = (value) => {
+            const stringValue = value === undefined || value === null ? '' : String(value);
+            if (/[",\n]/.test(stringValue)) {
+                return `"${stringValue.replace(/"/g, '""')}"`;
+            }
+            return stringValue;
+        };
+        const rows = filteredContacts.map((contact) => [
+            contact?.first_name,
+            contact?.last_name,
+            contact?.nickname,
+            contact?.email,
+            contact?.phone,
+            contact?.birthday,
+            contact?.notes,
+        ].map(escapeCsvValue).join(','));
+        const csvContent = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'contacts.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
     const handleDelete = async (contactId) => {
         try {
             const response = await fetch(`${API_BASE_URL}/delete_contact/${contactId}`, {
@@ -129,6 +167,15 @@ function App() {
                         onEdit={openEditModal}
                         onDelete={handleDelete}
                     />
+                    <div className="mt-3 text-right">
+                        <button
+                            type="button"
+                            onClick={handleDownloadCsv}
+                            className="text-xs text-zinc-500 hover:text-zinc-300"
+                        >
+                            Download CSV
+                        </button>
+                    </div>
                 </section>
             </div>
 
