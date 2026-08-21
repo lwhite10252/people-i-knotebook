@@ -11,6 +11,7 @@ function App() {
     const [loadError, setLoadError] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingContact, setEditingContact] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const fetchContacts = useCallback(async () => {
         setIsLoading(true);
@@ -53,6 +54,23 @@ function App() {
         fetchContacts();
     };
 
+    const filteredContacts = contacts.filter((contact) => {
+        const term = searchTerm.trim().toLowerCase();
+        if (! term) return true;
+        
+        const haystack = [
+            contact?.first_name,
+            contact?.last_name,
+            contact?.nickname,
+            contact?.email,
+        ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+        return haystack.includes(term);
+    });
+
     const handleDelete = async (contactId) => {
         try {
             const response = await fetch(`${API_BASE_URL}/delete_contact/${contactId}`, {
@@ -92,11 +110,20 @@ function App() {
                 </header>
 
                 <section>
-                    <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-zinc-500">
-                        Contacts
-                    </h2>
+                    <div className="mb-3 flex items-center justify-between gap-4">
+                        <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
+                            Contacts
+                        </h2>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search"
+                            className="w-64 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 outline-none focus:border-amber-500"
+                        />
+                    </div>
                     <ContactList
-                        contacts={contacts}
+                        contacts={filteredContacts}
                         isLoading={isLoading}
                         loadError={loadError}
                         onEdit={openEditModal}
