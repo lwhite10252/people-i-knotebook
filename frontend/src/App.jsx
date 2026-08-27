@@ -183,6 +183,7 @@ function App() {
                 <ContactForm
                     existingContact={editingContact || {}}
                     onSaved={handleContactSaved}
+                    onCancel={closeModal}
                 />
             </ContactModal>
         </div>
