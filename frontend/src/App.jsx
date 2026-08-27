@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import ContactList from './ContactList';
 import ContactForm from './ContactForm';
 import ContactModal from './components/ContactModal';
+import Toast from './components/Toast';
 
 const API_BASE_URL = 'http://127.0.0.1:5000';
 
@@ -12,6 +13,7 @@ function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingContact, setEditingContact] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [toast, setToast] = useState(null);
 
     const fetchContacts = useCallback(async () => {
         setIsLoading(true);
@@ -50,11 +52,11 @@ function App() {
     };
 
     const handleContactSaved = () => {
+        const wasEditing = Boolean(editingContact);
         closeModal();
         fetchContacts();
+        setToast({ message: wasEditing ? 'Contact updated.' : 'Contact added.' });
     };
-
-    const filteredContacts = contacts.filter((contact) => {
         const term = searchTerm.trim().toLowerCase();
         if (! term) return true;
         
@@ -118,8 +120,9 @@ function App() {
                 throw new Error('Delete request failed.');
             }
             fetchContacts();
+            setToast({ message: 'Contact deleted.', tone: 'danger' });
         } catch (error) {
-            alert('Could not delete that contact. Please try again.');
+            setToast({ message: 'Could not delete that contact. Please try again.', tone: 'danger' });
         }
     };
 
@@ -186,6 +189,14 @@ function App() {
                     onCancel={closeModal}
                 />
             </ContactModal>
+
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    tone={toast.tone}
+                    onDismiss={() => setToast(null)}
+                />
+            )}
         </div>
     );
 }
