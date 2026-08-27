@@ -59,6 +59,9 @@ const ContactList = ({
     contacts,
     isLoading,
     loadError,
+    isFiltered,
+    sortConfig,
+    onSort,
     onEdit,
     onDelete,
 }) => {
@@ -105,6 +108,23 @@ const ContactList = ({
                 <thead className="bg-zinc-950 text-zinc-500">
                     <tr>
                         <th className="w-12 px-4 py-3" aria-hidden="true" />
+                        {SORTABLE_COLUMNS.map((column) => {
+                            const isActive = sortConfig?.key === column.key;
+                            return (
+                                <th key={column.key} className="px-4 py-3 font-medium">
+                                    <button
+                                        type="button"
+                                        onClick={() => onSort(column.key)}
+                                        className="flex items-center gap-1.5 text-zinc-500 transition hover:text-zinc-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                                    >
+                                        {column.label}
+                                        <span className={isActive ? 'text-amber-500' : ''}>
+                                            <SortIcon direction={isActive ? sortConfig.direction : null} />
+                                        </span>
+                                    </button>
+                                </th>
+                            );
+                        })}
                         <th className="px-4 py-3 font-medium">Notes</th>
                         <th className="px-4 py-3 font-medium text-right"></th>
                     </tr>

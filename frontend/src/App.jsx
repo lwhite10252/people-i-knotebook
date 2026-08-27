@@ -13,6 +13,7 @@ function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingContact, setEditingContact] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
     const [toast, setToast] = useState(null);
 
     const fetchContacts = useCallback(async () => {
@@ -57,21 +58,53 @@ function App() {
         fetchContacts();
         setToast({ message: wasEditing ? 'Contact updated.' : 'Contact added.' });
     };
-        const term = searchTerm.trim().toLowerCase();
-        if (! term) return true;
-        
-        const haystack = [
-            contact?.first_name,
-            contact?.last_name,
-            contact?.nickname,
-            contact?.email,
-        ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
 
-        return haystack.includes(term);
-    });
+    const handleSort = (key) => {
+        setSortConfig((prev) => {
+            if (prev.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            }
+            return { key, direction: 'asc' };
+        });
+    };
+
+    const filteredContacts = useMemo(() => {
+        const term = searchTerm.trim().toLowerCase();
+        if (! term) return contacts;
+
+        return contacts.filter((contact) => {
+            const haystack = [
+                contact?.first_name,
+                contact?.last_name,
+                contact?.nickname,
+                contact?.email,
+            ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+            return haystack.includes(term);
+        });
+    }, [contacts, searchTerm]);
+
+    const sortedContacts = useMemo(() => {
+        const { key, direction } = sortConfig;
+        const multiplier = direction === 'asc' ? 1 : -1;
+
+        const getSortValue = (contact) => {
+            if (key === 'name') {
+                return `${contact?.first_name ?? ''} ${contact?.last_name ?? ''}`.trim().toLowerCase();
+            }
+            return (contact?.[key] ?? '').toLowerCase?.() ?? contact?.[key] ?? '';
+        };
+
+        return [...filteredContacts].sort((a, b) => {
+            const valueA = getSortValue(a);
+            const valueB = getSortValue(b);
+            if (valueA < valueB) return -1 * multiplier;
+            if (valueA > valueB) return 1 * multiplier;
+            return 0;
+        });
+    }, [filteredContacts, sortConfig]);
 
     const handleDownloadCsv = () => {
         const headers = [
@@ -90,7 +123,7 @@ function App() {
             }
             return stringValue;
         };
-        const rows = filteredContacts.map((contact) => [
+        const rows = sortedContacts.map((contact) => [
             contact?.first_name,
             contact?.last_name,
             contact?.nickname,
@@ -185,9 +218,12 @@ function App() {
                         </div>
                     </div>
                     <ContactList
-                        contacts={filteredContacts}
+                        contacts={sortedContacts}
                         isLoading={isLoading}
                         loadError={loadError}
+                        isFiltered={Boolean(searchTerm.trim())}
+                        sortConfig={sortConfig}
+                        onSort={handleSort}
                         onEdit={openEditModal}
                         onDelete={handleDelete}
                     />
