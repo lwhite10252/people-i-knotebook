@@ -12,6 +12,10 @@ def validate_contact(payload: dict, required: bool = True) -> list[str]:
 
     if required and (not first_name_raw or not last_name_raw):
         errors.append('First name and last name are required.')
+    if not required and 'firstName' in payload and not first_name_raw:
+        errors.append('First name is required.')
+    if not required and 'lastName' in payload and not last_name_raw:
+        errors.append('Last name is required.')
 
     if first_name_raw and (len(first_name_raw) < 2 or len(first_name_raw) > 50):
         errors.append('First name must be between 2 and 50 characters.')

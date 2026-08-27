@@ -73,19 +73,19 @@ def update_contact(user_id):
             }), 400
         )
 
-    if cleaned['first_name'] is not None:
+    if 'firstName' in data:
         contact.first_name = cleaned['first_name']
-    if cleaned['last_name'] is not None:
+    if 'lastName' in data:
         contact.last_name = cleaned['last_name']
-    if cleaned['nickname'] is not None:
+    if 'nickname' in data:
         contact.nickname = cleaned['nickname']
-    if cleaned['email'] is not None:
+    if 'email' in data:
         contact.email = cleaned['email']
-    if cleaned['phone'] is not None:
+    if 'phone' in data:
         contact.phone = cleaned['phone']
-    if cleaned['birthday'] is not None:
-        contact.birthday = cleaned['birthday'].isoformat()
-    if cleaned['notes'] is not None:
+    if 'birthday' in data:
+        contact.birthday = cleaned['birthday'].isoformat() if cleaned['birthday'] else None
+    if 'notes' in data:
         contact.notes = cleaned['notes']
 
     db.session.commit()
