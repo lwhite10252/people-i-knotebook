@@ -26,7 +26,9 @@ const ContactList = ({
     if ((contacts?.length ?? 0) === 0) {
         return (
             <div className="rounded-xl border border-dashed border-zinc-700 bg-zinc-900 p-8 text-center text-zinc-400">
-                No contacts yet. Use "New Contact" to add the first one.
+                {isFiltered
+                    ? 'No contacts match your search.'
+                    : 'No contacts yet. Use "New Contact" to add the first one.'}
             </div>
         );
     }
